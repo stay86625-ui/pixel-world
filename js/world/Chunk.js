@@ -22,8 +22,8 @@ Game.Chunk = (function () {
                     const wx = this.cx * CS + tx;
                     const wy = this.cy * CS + ty;
                     const scale = Game.Config.NOISE_SCALE;
-                    const h = noise.simplex2(wx * scale, wy * scale);
-                    const m = noise.simplex2(wx * scale + 500, wy * scale + 500);
+                    const h = noise.sn(wx * scale, wy * scale);
+                    const m = noise.sn(wx * scale + 500, wy * scale + 500);
                     const biome = Game.BiomeManager.getBiome(h);
                     const type  = Game.BiomeManager.getTileType(h, m);
                     this.tiles.push({ type, biome });
