@@ -1,17 +1,22 @@
 window.Game = window.Game || {};
 
 (function () {
+    // 必須在 Application 建立前設定，否則 texture 已建立就來不及
+    PIXI.settings.SCALE_MODE   = PIXI.SCALE_MODES.NEAREST;  // 消除 tile 穿模/模糊
+    PIXI.settings.ROUND_PIXELS = true;                        // 像素對齊，消除縫隙
+
     const CFG   = Game.Config;
-    const W     = CFG.WIDTH;
-    const H     = CFG.HEIGHT;
-    const SCALE = CFG.SCALE;
+    const W     = CFG.WIDTH;   // 320
+    const H     = CFG.HEIGHT;  // 180
+    const SCALE = CFG.SCALE;   // 3 → 960x540 顯示
 
     const app = new PIXI.Application({
-        width:  W * SCALE,
-        height: H * SCALE,
+        width:           W * SCALE,
+        height:          H * SCALE,
         backgroundColor: CFG.PALETTE.BLACK,
-        antialias: false,
-        resolution: 1,
+        antialias:       false,
+        roundPixels:     true,
+        resolution:      1,
     });
     document.getElementById('game-container').appendChild(app.view);
     app.view.style.imageRendering = 'pixelated';
@@ -27,14 +32,13 @@ window.Game = window.Game || {};
     root.addChild(worldStage);
     root.addChild(uiStage);
 
-    // 顯示載入畫面
+    // 載入畫面
     const loadText = new PIXI.Text('Loading...', {
-        fontFamily: 'monospace', fontSize: 14, fill: 0xffffff
+        fontFamily: 'monospace', fontSize: 10, fill: 0xffffff
     });
     loadText.x = 10; loadText.y = 10;
     uiStage.addChild(loadText);
 
-    // 等素材全部載入後才啟動遊戲
     Game.SpriteLoader.load(() => {
         uiStage.removeChild(loadText);
 
@@ -55,7 +59,6 @@ window.Game = window.Game || {};
             const dt = delta / 60;
             Game.ChunkManager.update(player.x, player.y);
             player.update(dt, keys);
-            // anchor 在腳底，camera 對準腳底上方 8px
             Game.Camera.follow(player.x, player.y - 8, dt);
             Game.HUD.update(player.hp, player.maxHp);
         });
