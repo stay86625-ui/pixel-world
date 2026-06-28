@@ -2,24 +2,24 @@ window.Game = window.Game || {};
 
 Game.Config = {
     // 畫布解析度（像素世界內部解析度）
-    WIDTH: 320,
-    HEIGHT: 180,
-    SCALE: 4,          // 放大倍數 → 顯示 1280x720
+    WIDTH: 480,
+    HEIGHT: 270,
+    SCALE: 3,          // 放大倍數 → 顯示 1440x810（視野更寬）
 
     // Tile
-    TILE: 16,          // 每格 16x16 像素
-    CHUNK_SIZE: 16,    // 每個 Chunk 16x16 格
+    TILE: 16,
+    CHUNK_SIZE: 16,
 
     // 世界生成
     SEED: 12345,
-    NOISE_SCALE: 0.04,
+    NOISE_SCALE: 0.035,
 
-    // 攝影機視野（以 tile 為單位）
-    VIEW_W: 20,        // 320/16
-    VIEW_H: 12,        // 180/16（約）
+    // 攝影機視野
+    VIEW_W: 30,        // 480/16
+    VIEW_H: 17,
 
     // 實體
-    PLAYER_SPEED: 80,  // 像素/秒
+    PLAYER_SPEED: 90,  // 像素/秒
 
     // 調色盤（全局 8 色 UI + 各生態區自行定義）
     PALETTE: {
