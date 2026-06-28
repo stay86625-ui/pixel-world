@@ -2,9 +2,9 @@ window.Game = window.Game || {};
 
 Game.Config = {
     // 畫布解析度（像素世界內部解析度）
-    WIDTH: 480,
-    HEIGHT: 270,
-    SCALE: 3,          // 放大倍數 → 顯示 1440x810（視野更寬）
+    WIDTH: 320,
+    HEIGHT: 180,
+    SCALE: 3,          // 放大倍數 → 顯示 960x540（接近 Core Keeper 視野）
 
     // Tile
     TILE: 16,
@@ -15,8 +15,8 @@ Game.Config = {
     NOISE_SCALE: 0.035,
 
     // 攝影機視野
-    VIEW_W: 30,        // 480/16
-    VIEW_H: 17,
+    VIEW_W: 20,        // 320/16
+    VIEW_H: 11,        // 180/16
 
     // 實體
     PLAYER_SPEED: 90,  // 像素/秒
