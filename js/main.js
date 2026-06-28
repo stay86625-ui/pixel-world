@@ -65,10 +65,10 @@ window.Game = window.Game || {};
         Game.ChunkManager.update(player.x, player.y);
 
         // 更新玩家
-        player.update(dt, keys, mouseW.x, mouseW.y);
+        player.update(dt, keys);
 
-        // 攝影機跟隨
-        Game.Camera.follow(player.x + 12, player.y + 16, dt);
+        // 攝影機跟隨（16x22 角色中心）
+        Game.Camera.follow(player.x + 8, player.y + 11, dt);
 
         // HUD
         Game.HUD.update(player.hp, player.maxHp);
