@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel World</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #game-container canvas {
+            display: block;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+
+    <!-- 依序載入（IIFE 模式，非 ES module） -->
+    <script src="pixi.min.js"></script>
+
+    <!-- 基礎 -->
+    <script src="js/config.js"></script>
+    <script src="js/noise.js"></script>
+    <script src="js/ObjectPool.js"></script>
+
+    <!-- 美術 -->
+    <script src="js/art/Palette.js"></script>
+    <script src="js/art/TileArt.js"></script>
+
+    <!-- 世界 -->
+    <script src="js/world/Tile.js"></script>
+    <script src="js/world/BiomeManager.js"></script>
+    <script src="js/world/Chunk.js"></script>
+    <script src="js/world/ChunkManager.js"></script>
+
+    <!-- 系統 -->
+    <script src="js/systems/Camera.js"></script>
+
+    <!-- 實體 -->
+    <script src="js/entities/Player.js"></script>
+
+    <!-- UI -->
+    <script src="js/ui/HUD.js"></script>
+
+    <!-- 主程式（最後載入） -->
+    <script src="js/main.js"></script>
+</body>
+</html>
