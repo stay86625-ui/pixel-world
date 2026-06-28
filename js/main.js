@@ -68,7 +68,7 @@ window.Game = window.Game || {};
         player.update(dt, keys, mouseW.x, mouseW.y);
 
         // 攝影機跟隨
-        Game.Camera.follow(player.x + 8, player.y + 12, dt);
+        Game.Camera.follow(player.x + 12, player.y + 16, dt);
 
         // HUD
         Game.HUD.update(player.hp, player.maxHp);
