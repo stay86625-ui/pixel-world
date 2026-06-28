@@ -52,7 +52,8 @@ window.Game = window.Game || {};
         worldStage.addChild(player.sprite);
 
         const keys = {};
-        window.addEventListener('keydown', e => { keys[e.key] = true; e.preventDefault(); });
+        const GAME_KEYS = new Set(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D']);
+        window.addEventListener('keydown', e => { keys[e.key] = true; if (GAME_KEYS.has(e.key)) e.preventDefault(); });
         window.addEventListener('keyup',   e => { keys[e.key] = false; });
 
         app.ticker.add((delta) => {
