@@ -2,6 +2,7 @@ window.Game = window.Game || {};
 
 Game.Player = (function () {
     const SPD = Game.Config.PLAYER_SPEED;
+    const T   = Game.Config.TILE;  // 16
 
     class Player {
         constructor() {
@@ -9,14 +10,14 @@ Game.Player = (function () {
             this.vx = 0; this.vy = 0;
             this.hp = 100; this.maxHp = 100;
             this.facing = 'right';
-            this.animFrame = 0;
-            this.animTimer = 0;
-            this.ANIM_FPS = 8;
+            this._stepTimer = 0;
+            this._step = 0;         // 0 or 1，用於腳步 bob
+            this._moving = false;
 
-            const frames = Game.SpriteLoader.textures.CHAR;
-            this.sprite = new PIXI.AnimatedSprite(frames);
-            this.sprite.anchor.set(0.5, 1); // 腳底為錨點，置中
-            this.sprite.scale.set(2);       // 2× 放大讓角色更清晰
+            const tex = Game.SpriteLoader.textures.CHAR_KNIGHT;
+            this.sprite = new PIXI.Sprite(tex);
+            this.sprite.anchor.set(0.5, 0.5); // 中心錨點，腳部在 y+8
+            this.sprite.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
         }
 
         update(dt, keys) {
@@ -26,40 +27,53 @@ Game.Player = (function () {
             if (keys['ArrowUp']    || keys['w'] || keys['W']) this.vy = -SPD;
             if (keys['ArrowDown']  || keys['s'] || keys['S']) this.vy =  SPD;
 
+            // 斜向標準化
             if (this.vx !== 0 && this.vy !== 0) { this.vx *= 0.707; this.vy *= 0.707; }
 
+            // 碰撞
             const nx = this.x + this.vx * dt;
             const ny = this.y + this.vy * dt;
             if (!this._solid(nx, this.y)) this.x = nx;
             if (!this._solid(this.x, ny)) this.y = ny;
 
-            if (this.vx !== 0) this.facing = this.vx > 0 ? 'right' : 'left';
+            // 朝向
+            if (this.vx < 0) this.facing = 'left';
+            if (this.vx > 0) this.facing = 'right';
 
-            const moving = this.vx !== 0 || this.vy !== 0;
-            if (moving) {
-                this.animTimer += dt;
-                if (this.animTimer >= 1 / this.ANIM_FPS) {
-                    this.animTimer = 0;
-                    this.animFrame = (this.animFrame + 1) % 4;
+            this._moving = (this.vx !== 0 || this.vy !== 0);
+
+            // 腳步 bob：每 0.15 秒切換一次 ±1px Y 偏移
+            if (this._moving) {
+                this._stepTimer += dt;
+                if (this._stepTimer >= 0.15) {
+                    this._stepTimer = 0;
+                    this._step = 1 - this._step;
                 }
             } else {
-                this.animFrame = 0; this.animTimer = 0;
+                this._step = 0; this._stepTimer = 0;
             }
 
-            this.sprite.texture = this.sprite.textures[this.animFrame];
-            this.sprite.scale.x = this.facing === 'left' ? -2 : 2;
+            // 套用到 sprite（整數座標消除穿模）
+            const bobY = this._moving ? (this._step === 0 ? 0 : -1) : 0;
+            this.sprite.scale.x = this.facing === 'left' ? -1 : 1;
             this.sprite.x = Math.round(this.x);
-            this.sprite.y = Math.round(this.y);
+            this.sprite.y = Math.round(this.y + bobY);
         }
 
         _solid(px, py) {
-            const T = Game.Config.TILE;
-            for (const [ox, oy] of [[2, 0],[13, 0],[2, -8],[13, -8]]) {
-                const tile = Game.ChunkManager.getTileAt(px + ox, py + oy);
+            const checks = [
+                [px - 4, py + 6], [px + 4, py + 6],  // 腳底兩側
+                [px - 4, py - 2], [px + 4, py - 2],   // 身體上半
+            ];
+            for (const [wx, wy] of checks) {
+                const tile = Game.ChunkManager.getTileAt(wx, wy);
                 if (tile && Game.Tile.isSolid(tile.type)) return true;
             }
             return false;
         }
+
+        get tileX() { return Math.floor(this.x / T); }
+        get tileY() { return Math.floor(this.y / T); }
     }
 
     return Player;
